@@ -98,6 +98,11 @@ public final class RemoteTransaction extends AbstractTransaction {
         return timeout;
     }
 
+    @Override
+    public long getTimeLeftBeforeTransactionTimeout(boolean errorRollback) {
+        return -1;
+    }
+
     public <T> T getProviderInterface(final Class<T> providerInterfaceType) {
         final SecurityManager sm = System.getSecurityManager();
         if (sm != null) {

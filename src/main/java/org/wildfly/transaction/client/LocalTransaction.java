@@ -32,6 +32,7 @@ import javax.transaction.xa.XAException;
 import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
 
+import org.jboss.tm.TransactionTimeoutConfiguration;
 import org.wildfly.common.Assert;
 import org.wildfly.transaction.client._private.Log;
 
@@ -144,6 +145,16 @@ public final class LocalTransaction extends AbstractTransaction {
 
     public int getTransactionTimeout() {
         return owner.getProvider().getTimeout(transaction);
+    }
+
+    @Override
+    public long getTimeLeftBeforeTransactionTimeout(boolean errorRollback) throws RollbackException {
+        final TransactionManager tm = owner.getProvider().getTransactionManager();
+        if (tm instanceof TransactionTimeoutConfiguration) {
+            return ((TransactionTimeoutConfiguration) tm).getTimeLeftBeforeTransactionTimeout(errorRollback);
+        } else {
+            return -1;
+        }
     }
 
     public boolean enlistResource(final XAResource xaRes) throws RollbackException, IllegalStateException, SystemException {

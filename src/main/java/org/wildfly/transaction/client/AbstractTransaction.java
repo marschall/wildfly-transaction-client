@@ -33,6 +33,7 @@ import javax.transaction.Synchronization;
 import javax.transaction.SystemException;
 import javax.transaction.Transaction;
 
+import org.jboss.tm.TransactionTimeoutConfiguration;
 import org.wildfly.common.Assert;
 import org.wildfly.common.function.ExceptionBiConsumer;
 import org.wildfly.common.function.ExceptionBiFunction;
@@ -51,7 +52,7 @@ import org.wildfly.transaction.client._private.Log;
  *
  * @author <a href="mailto:david.lloyd@redhat.com">David M. Lloyd</a>
  */
-public abstract class AbstractTransaction implements Transaction {
+public abstract class AbstractTransaction implements Transaction, TransactionTimeoutConfiguration {
     private static final TransactionPermission ASSOCIATION_LISTENER_PERMISSION = TransactionPermission.forName("registerAssociationListener");
 
     private final Object outflowLock = new Object();
