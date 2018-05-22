@@ -24,13 +24,7 @@
 
     <groupId>org.wildfly.transaction</groupId>
     <artifactId>wildfly-transaction-client</artifactId>
-    <version>1.0.2.Final</version>
-
-    <parent>
-        <groupId>org.jboss</groupId>
-        <artifactId>jboss-parent</artifactId>
-        <version>21</version>
-    </parent>
+    <version>1.0.2.1-SNAPSHOT</version>
 
     <name>WildFly transaction client</name>
     <description>Client library for applications using transactions with Wildfly</description>
