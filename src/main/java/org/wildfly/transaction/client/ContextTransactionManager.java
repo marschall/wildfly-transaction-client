@@ -117,7 +117,11 @@ public final class ContextTransactionManager implements TransactionManager, Tran
 
     @Override
     public long getTimeLeftBeforeTransactionTimeout(boolean errorRollback) throws RollbackException {
-        return stateRef.get().transaction.getTimeLeftBeforeTransactionTimeout(errorRollback);
+        final State state = stateRef.get();
+        if (state.transaction == null) {
+            return -1;
+        }
+        return state.transaction.getTimeLeftBeforeTransactionTimeout(errorRollback);
     }
 
     public AbstractTransaction suspend() throws SystemException {
