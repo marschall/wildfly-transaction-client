@@ -35,6 +35,7 @@ import javax.transaction.xa.Xid;
 import org.jboss.tm.TransactionTimeoutConfiguration;
 import org.wildfly.common.Assert;
 import org.wildfly.transaction.client._private.Log;
+import org.wildfly.transaction.client.spi.LocalTransactionProvider;
 
 /**
  * A transaction from a local transaction provider.
@@ -56,6 +57,9 @@ public final class LocalTransaction extends AbstractTransaction {
         }
         try {
             owner.getProvider().commitLocal(transaction);
+        } catch (RollbackException re) {
+            addRollbackExceptions(re);
+            throw re;
         } finally {
             final XAOutflowedResources outflowedResources = RemoteTransactionContext.getOutflowedResources(this);
             if (outflowedResources == null || outflowedResources.getEnlistedSubordinates() == 0) {
@@ -72,6 +76,9 @@ public final class LocalTransaction extends AbstractTransaction {
         notifyAssociationListeners(false);
         try {
             owner.getProvider().getTransactionManager().commit();
+        } catch (RollbackException re) {
+            addRollbackExceptions(re);
+            throw re;
         } finally {
             final XAOutflowedResources outflowedResources = RemoteTransactionContext.getOutflowedResources(this);
             if (outflowedResources == null || outflowedResources.getEnlistedSubordinates() == 0) {
@@ -135,7 +142,12 @@ public final class LocalTransaction extends AbstractTransaction {
         }
     }
 
+    LocalTransactionProvider getProvider() {
+        return owner.getProvider();
+    }
+
     public void setRollbackOnly() throws IllegalStateException, SystemException {
+        super.setRollbackOnly();
         transaction.setRollbackOnly();
     }
 
